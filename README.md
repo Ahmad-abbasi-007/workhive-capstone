@@ -1,22 +1,45 @@
-# WorkHive - Freelance Marketplace (Zenvio Capstone - Task 6)
+# WorkHive - Freelance Marketplace
 
-A full-stack freelance platform where clients post projects, freelancers bid, chat, and complete work with ratings.
+WorkHive is a full-stack freelance marketplace. Clients can post projects and hire freelancers; freelancers can bid, message clients after hiring, and leave reviews.
 
-Live Demo: [Frontend Vercel Link] | [Backend Render Link]
-GitHub: (https://github.com/Ahmad-abbasi-007/workhive-capstone)
+## Stack
 
-## Problem
-Small businesses struggle to find reliable freelancers, and freelancers waste time on fake clients. Existing platforms take 20% fees and have poor chat.
+- Frontend: React, Vite, Tailwind CSS
+- API: Node.js, Express, MongoDB, JWT
+- Tests: Vitest/React Testing Library and Jest/Supertest
 
-## Solution
-WorkHive: Direct client-freelancer marketplace with:
-- Role-based auth (Client posts, Freelancer bids)
-- Real-time chat after hiring
-- Complete + Rating system for trust
-- Search with budget filters, Dashboard with charts, Dark mode
+## Deploy
 
-## Architecture
-Frontend: React + Vite + React Router + Tailwind (5 pages: Login, Register, Projects, My Projects/My Jobs, Chat, Dashboard)
-Backend: Node.js + Express + MongoDB + JWT
-Real-time: Polling (3s) for chat (Stretch: WebSockets ready)
-Tests: Jest + Supertest (backend), Vitest + RTL (frontend) - 15 tests
+The frontend is deployed to Vercel and the API to Render. The frontend needs the API's public base URL at build time.
+
+### 1. Deploy the API to Render
+
+1. Create a MongoDB database and copy its connection string.
+2. In Render, create a Blueprint from this repository and apply the settings in [`render.yaml`](./render.yaml).
+3. Set `MONGO_URI` to the MongoDB connection string in the Render service environment. Render generates `JWT_SECRET` for the service.
+4. Wait for the service health check at `/api/health` to pass and copy the service URL, for example `https://workhive-api.onrender.com`.
+
+### 2. Deploy the frontend to Vercel
+
+1. Import this repository into Vercel.
+2. Set the project **Root Directory** to `client`.
+3. Set the environment variable `VITE_API_URL` to the Render service URL, without a trailing slash or `/api` suffix.
+4. Deploy. The Vercel rewrite in [`client/vercel.json`](./client/vercel.json) supports direct visits to React Router pages.
+
+Set `VITE_API_URL` for each Vercel environment (Production, Preview, and Development) as needed. Since Vite embeds this value during build, redeploy after changing it.
+
+## Local development
+
+Requirements: Node.js 20 and a reachable MongoDB instance.
+
+1. Copy `server/.env.example` to `server/.env` and set `MONGO_URI` and a private `JWT_SECRET`.
+2. In one terminal, run `cd server`, `npm install`, then `npm start`.
+3. In another terminal, run `cd client`, `npm install`, then `npm run dev`.
+
+The client defaults to `http://localhost:5000` for its API during local development. Override this with `client/.env.local` if needed.
+
+## Tests and build
+
+- Frontend tests: `cd client` then `npm test -- --run`
+- Frontend production build: `cd client` then `npm run build`
+- Backend tests: `cd server` then `npm test`

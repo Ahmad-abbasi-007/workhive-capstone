@@ -4,6 +4,8 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const express = require('express');
 const cors = require('cors');
 
+process.env.JWT_SECRET = 'test-jwt-secret-for-tests';
+
 let app, mongoServer;
 
 beforeAll(async () => {
